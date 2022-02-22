@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 import org.deeplearning4j.models.embeddings.loader.WordVectorSerializer;
 import org.deeplearning4j.models.embeddings.wordvectors.WordVectors;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.mcse.ardoco.WordMovers;
 

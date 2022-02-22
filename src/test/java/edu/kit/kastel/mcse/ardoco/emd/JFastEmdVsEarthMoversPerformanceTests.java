@@ -1,19 +1,18 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.emd;
 
-import org.junit.Test;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
- * Created by Majer on 22. 09. 2016.
+ * Created by Majer on 22. 09. 2016. Updated by Jan Keim in 2022
  */
 public class JFastEmdVsEarthMoversPerformanceTests {
 
-    EarthMovers earthMovers = new EarthMovers();
-
-    @Test
     @Disabled("Disabled for CI, execute manually and only locally")
+    @Test
     public void performanceComparison() {
+        EarthMovers earthMovers = new EarthMovers();
 
         int size = 20;
         double[] a = EarthMoversUtils.randomVector(size);
