@@ -46,8 +46,8 @@ public class EarthMovers {
 
         var minSum = Math.min(sumP, sumQ);
         var maxSum = Math.max(sumP, sumQ);
-        if (maxSum <= 1e100) {
-            maxSum = 1e100;
+        if (maxSum <= Double.MIN_VALUE) {
+            maxSum = Double.MIN_VALUE;
         }
         var pqNormFactor = MULT_FACTOR / maxSum;
         var cNormFactor = MULT_FACTOR / maxC;
