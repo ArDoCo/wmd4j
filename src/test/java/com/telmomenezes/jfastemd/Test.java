@@ -1,11 +1,16 @@
 /* Licensed under MIT 2022. */
 package com.telmomenezes.jfastemd;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * @author Telmo Menezes (telmo@telmomenezes.com)
  *
  */
 public class Test {
+    private static Logger logger = LogManager.getLogger();
+
     static double[] a0 = { 1.0, 0.0, 0.0, 0.0 };
     static double[] a1 = { 0.0, 1.0, 0.0, 0.0 };
     static double[] a2 = { 0.0, 1.0, 1.0, 0.0 };
@@ -86,10 +91,10 @@ public class Test {
     }
 
     public static void main(String[] args) {
-        System.out.println("test 1: " + emdDist(a0, a0, 2) + " [expected: 0.0]");
-        System.out.println("test 1: " + emdDist(a0, a1, 2) + " [expected: 1.0]");
-        System.out.println("test 2: " + emdDist(a0, a2, 2) + " [expected: 2.0]");
-        System.out.println("test 3: " + emdDist(b0, b1, 10) + " [expected: 19.1921]");
-        System.out.println("test 4: " + emdDist(b0, b2, 10) + " [expected: 25.7637]");
+        logger.info("test 1: {} [expected: 0.0]", emdDist(a0, a0, 2));
+        logger.info("test 1: {} [expected: 1.0]", emdDist(a0, a1, 2));
+        logger.info("test 2: {} [expected: 2.0]", emdDist(a0, a2, 2));
+        logger.info("test 3: {} [expected: 19.1921]", emdDist(b0, b1, 10));
+        logger.info("test 4: {} [expected: 25.7637]", emdDist(b0, b2, 10));
     }
 }

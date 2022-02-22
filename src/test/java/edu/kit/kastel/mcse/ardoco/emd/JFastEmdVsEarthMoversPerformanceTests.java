@@ -1,6 +1,8 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.emd;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -8,6 +10,7 @@ import org.junit.jupiter.api.Test;
  * Created by Majer on 22. 09. 2016. Updated by Jan Keim in 2022
  */
 public class JFastEmdVsEarthMoversPerformanceTests {
+    private static Logger logger = LogManager.getLogger();
 
     @Disabled("Disabled for CI, execute manually and only locally")
     @Test
@@ -33,14 +36,14 @@ public class JFastEmdVsEarthMoversPerformanceTests {
             EarthMoversUtils.jfastemd(a, b, m, 1);
         }
 
-        System.out.println((System.nanoTime() - start) + " = jfastemd");
+        logger.debug((System.nanoTime() - start) + " = jfastemd");
 
         start = System.nanoTime();
         for (int i = 0; i < repeats; i++) {
             earthMovers.distance(a, b, m, 1);
         }
 
-        System.out.println((System.nanoTime() - start) + " = optimized-jfastemd");
+        logger.debug((System.nanoTime() - start) + " = optimized-jfastemd");
 
     }
 }
