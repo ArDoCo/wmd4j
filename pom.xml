@@ -40,6 +40,14 @@
     </dependency>
   </dependencies>
 
+  <repositories>
+    <repository>
+      <id>github</id>
+      <name>GitHub ArDoCo/ADDClass Apache Maven Packages</name>
+      <url>https://maven.pkg.github.com/ArDoCo/ADDClass</url>
+    </repository>
+  </repositories>
+
   <build>
     <pluginManagement>
       <plugins>
