@@ -68,7 +68,7 @@ public class WordMovers {
                     double distance = mapA.get(tokenA).getVector().distance2(mapB.get(tokenB).getVector());
                     // if tokenA and tokenB are stopwords, calculate distance according to stopword weight
                     if (stopwords != null && tokenA.length() != 1 && tokenB.length() != 1)
-                        distance *= stopwords.contains(tokenA) && stopwords.contains(tokenB) ? 1 : stopwordWeight;
+                        distance *= stopwords.contains(tokenA) || stopwords.contains(tokenB) ? stopwordWeight : 1;
                     matrix[i][j] = distance;
                     matrix[j][i] = distance;
                 }
