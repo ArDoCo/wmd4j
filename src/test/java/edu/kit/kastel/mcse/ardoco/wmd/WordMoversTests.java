@@ -18,20 +18,20 @@ import edu.kit.kastel.mcse.ardoco.WordMovers;
 /**
  * Created by Majer on 22. 09. 2016. Updated by Jan Keim in 2022
  */
-public class WordMoversTests {
+class WordMoversTests {
 
     @Test
-    public void distance() throws IOException {
-        WordVectors vectors = WordVectorSerializer.loadStaticModel(new File("src/util/resources/tinyw2v.model"));
-        WordMovers wm = WordMovers.builder().wordVectors(vectors).build();
+    void distance() throws IOException {
+        var vectors = WordVectorSerializer.loadStaticModel(new File("src/util/resources/tinyw2v.model"));
+        var wm = WordMovers.builder().wordVectors(vectors).build();
 
-        try (Stream<String> stream = Files.lines(Paths.get("src/test/resources/gensim_distances.csv"))) {
+        try (var stream = Files.lines(Paths.get("src/test/resources/gensim_distances.csv"))) {
 
             stream.forEach(x -> {
-                String[] triple = x.split(",");
+                var triple = x.split(",");
 
-                double distance = wm.distance(triple[0].trim(), triple[1].trim());
-                double gensimDistance = Double.parseDouble(triple[2].trim());
+                var distance = wm.distance(triple[0].trim(), triple[1].trim());
+                var gensimDistance = Double.parseDouble(triple[2].trim());
 
                 assertEquals(String.format("%.5f", gensimDistance), String.format("%.5f", distance));
             });

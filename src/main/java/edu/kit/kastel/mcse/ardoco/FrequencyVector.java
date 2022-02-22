@@ -10,7 +10,7 @@ import org.nd4j.linalg.api.ndarray.INDArray;
  */
 public class FrequencyVector {
 
-    private volatile AtomicLong frequency;
+    private AtomicLong frequency;
     private INDArray vector;
 
     public FrequencyVector(INDArray vector) {

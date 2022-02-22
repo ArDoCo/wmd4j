@@ -52,7 +52,7 @@ public class WordMovers {
         var mapA = bagOfVectors(tokensA);
         var mapB = bagOfVectors(tokensB);
 
-        if (mapA.size() == 0 || mapB.size() == 0) {
+        if (mapA.isEmpty() || mapB.isEmpty()) {
             throw new NoSuchElementException(
                     "Can't find any word vectors for given input text ..." + Arrays.toString(tokensA) + "|" + Arrays.toString(tokensB));
         }
@@ -64,12 +64,12 @@ public class WordMovers {
             var tokenA = vocab.get(i);
             for (var j = 0; j < matrix.length; j++) {
                 var tokenB = vocab.get(j);
-                if (mapA.containsKey(tokenA) && mapB.containsKey(tokenB)) {
-                    var distance = mapA.get(tokenA).getVector().distance2(mapB.get(tokenB).getVector());
+                if (mapsContainTokens(mapA, mapB, tokenA, tokenB)) {
+                    var tokenAVector = mapA.get(tokenA).getVector();
+                    var tokenBVector = mapB.get(tokenB).getVector();
+                    var distance = tokenAVector.distance2(tokenBVector);
                     // if tokenA and tokenB are stopwords, calculate distance according to stopword weight
-                    if (stopwords != null && tokenA.length() != 1 && tokenB.length() != 1) {
-                        distance *= stopwords.contains(tokenA) || stopwords.contains(tokenB) ? stopwordWeight : 1;
-                    }
+                    distance *= getWeightForTokens(tokenA, tokenB);
                     matrix[i][j] = distance;
                     matrix[j][i] = distance;
                 }
@@ -80,6 +80,17 @@ public class WordMovers {
         var freqB = frequencies(vocab, mapB);
 
         return earthMovers.distance(freqA, freqB, matrix, 0);
+    }
+
+    private double getWeightForTokens(String tokenA, String tokenB) {
+        if (stopwords != null && tokenA.length() != 1 && tokenB.length() != 1) {
+            return stopwords.contains(tokenA) || stopwords.contains(tokenB) ? stopwordWeight : 1;
+        }
+        return 1;
+    }
+
+    private boolean mapsContainTokens(Map<String, FrequencyVector> mapA, Map<String, FrequencyVector> mapB, String tokenA, String tokenB) {
+        return mapA.containsKey(tokenA) && mapB.containsKey(tokenB);
     }
 
     private Map<String, FrequencyVector> bagOfVectors(String[] tokens) {
