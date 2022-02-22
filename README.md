@@ -10,10 +10,10 @@ This is a forked and updated version of [crtomirmajer/wmd4j](https://github.com/
 
 ```java
 
-WordVectors vectors = WordVectorSerializer.loadGoogleModel(new File(word2vecPath), false);
-WordMovers wm = WordMovers.Builder().wordVectors(vectors).build();
+WordVectors vectors = WordVectorSerializer.loadStaticModel(new File(word2vecPath));
+WordMovers wordMovers = WordMovers.builder().wordVectors(vectors).build();
 
-wm.distance("obama speaks to the media in illinois", "the president greets the press in chicago");
+wordMovers.distance("obama speaks to the media in illinois", "the president greets the press in chicago");
 ```
 
 # Validation
