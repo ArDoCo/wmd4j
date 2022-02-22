@@ -1,6 +1,8 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.nd4j.linalg.api.ndarray.INDArray;
 
 /**
@@ -8,7 +10,7 @@ import org.nd4j.linalg.api.ndarray.INDArray;
  */
 public class FrequencyVector {
 
-    private volatile long frequency;
+    private volatile AtomicLong frequency;
     private INDArray vector;
 
     public FrequencyVector(INDArray vector) {
@@ -16,16 +18,16 @@ public class FrequencyVector {
     }
 
     public FrequencyVector(long frequency, INDArray vector) {
-        this.frequency = frequency;
+        this.frequency = new AtomicLong(frequency);
         this.vector = vector;
     }
 
     public void incrementFrequency() {
-        frequency += 1;
+        frequency.incrementAndGet();
     }
 
     public long getFrequency() {
-        return frequency;
+        return frequency.get();
     }
 
     public INDArray getVector() {

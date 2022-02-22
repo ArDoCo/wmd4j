@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
  * @author Telmo Menezes (telmo@telmomenezes.com)
  *
  */
-public class Test {
+public class EMDTestMain {
     private static Logger logger = LogManager.getLogger();
 
     static double[] a0 = { 1.0, 0.0, 0.0, 0.0 };

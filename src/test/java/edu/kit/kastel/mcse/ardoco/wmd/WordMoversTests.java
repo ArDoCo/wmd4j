@@ -23,7 +23,7 @@ public class WordMoversTests {
     @Test
     public void distance() throws IOException {
         WordVectors vectors = WordVectorSerializer.loadStaticModel(new File("src/util/resources/tinyw2v.model"));
-        WordMovers wm = WordMovers.Builder().wordVectors(vectors).build();
+        WordMovers wm = WordMovers.builder().wordVectors(vectors).build();
 
         try (Stream<String> stream = Files.lines(Paths.get("src/test/resources/gensim_distances.csv"))) {
 

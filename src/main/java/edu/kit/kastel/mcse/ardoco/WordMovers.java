@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.deeplearning4j.models.embeddings.wordvectors.WordVectors;
@@ -46,37 +45,39 @@ public class WordMovers {
 
     public double distance(String[] tokensA, String[] tokensB) {
 
-        if (tokensA.length < 1 || tokensB.length < 1)
+        if (tokensA.length < 1 || tokensB.length < 1) {
             throw new IllegalArgumentException();
+        }
 
-        Map<String, FrequencyVector> mapA = bagOfVectors(tokensA);
-        Map<String, FrequencyVector> mapB = bagOfVectors(tokensB);
+        var mapA = bagOfVectors(tokensA);
+        var mapB = bagOfVectors(tokensB);
 
         if (mapA.size() == 0 || mapB.size() == 0) {
             throw new NoSuchElementException(
                     "Can't find any word vectors for given input text ..." + Arrays.toString(tokensA) + "|" + Arrays.toString(tokensB));
         }
         // vocabulary of current tokens
-        List<String> vocab = Stream.of(mapA.keySet(), mapB.keySet()).flatMap(Collection::stream).distinct().collect(Collectors.toList());
-        double matrix[][] = new double[vocab.size()][vocab.size()];
+        var vocab = Stream.of(mapA.keySet(), mapB.keySet()).flatMap(Collection::stream).distinct().toList();
+        var matrix = new double[vocab.size()][vocab.size()];
 
-        for (int i = 0; i < matrix.length; i++) {
-            String tokenA = vocab.get(i);
-            for (int j = 0; j < matrix.length; j++) {
-                String tokenB = vocab.get(j);
+        for (var i = 0; i < matrix.length; i++) {
+            var tokenA = vocab.get(i);
+            for (var j = 0; j < matrix.length; j++) {
+                var tokenB = vocab.get(j);
                 if (mapA.containsKey(tokenA) && mapB.containsKey(tokenB)) {
-                    double distance = mapA.get(tokenA).getVector().distance2(mapB.get(tokenB).getVector());
+                    var distance = mapA.get(tokenA).getVector().distance2(mapB.get(tokenB).getVector());
                     // if tokenA and tokenB are stopwords, calculate distance according to stopword weight
-                    if (stopwords != null && tokenA.length() != 1 && tokenB.length() != 1)
+                    if (stopwords != null && tokenA.length() != 1 && tokenB.length() != 1) {
                         distance *= stopwords.contains(tokenA) || stopwords.contains(tokenB) ? stopwordWeight : 1;
+                    }
                     matrix[i][j] = distance;
                     matrix[j][i] = distance;
                 }
             }
         }
 
-        double[] freqA = frequencies(vocab, mapA);
-        double[] freqB = frequencies(vocab, mapB);
+        var freqA = frequencies(vocab, mapA);
+        var freqB = frequencies(vocab, mapB);
 
         return earthMovers.distance(freqA, freqB, matrix, 0);
     }
@@ -104,7 +105,7 @@ public class WordMovers {
         }).toArray();
     }
 
-    public static Builder Builder() {
+    public static Builder builder() {
         return new Builder();
     }
 

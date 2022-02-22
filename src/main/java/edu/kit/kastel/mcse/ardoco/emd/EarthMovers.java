@@ -1,7 +1,12 @@
 /* Licensed under MIT 2022. */
 package edu.kit.kastel.mcse.ardoco.emd;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Algorithm authors:
@@ -18,147 +23,157 @@ public class EarthMovers {
 
     private MinimalCostFlow minimalCostFlow = new MinimalCostFlow();
 
-    public double distance(double[] P, double[] Q, double[][] C, double extraMassPenalty) {
+    public double distance(double[] p, double[] q, double[][] c, double extraMassPenalty) {
 
-        int N = P.length;
-        long[] iP = new long[N];
-        long[] iQ = new long[N];
-        long[][] iC = new long[N][N];
+        var n = p.length;
+        var iP = new long[n];
+        var iQ = new long[n];
+        var iC = new long[n][n];
 
-        double sumP = 0;
-        double sumQ = 0;
-        double maxC = C[0][0];
+        var sumP = 0D;
+        var sumQ = 0D;
+        var maxC = c[0][0];
 
-        for (int i = 0; i < N; i++) {
-            sumP += P[i];
-            sumQ += Q[i];
-            for (int j = 0; j < N; j++) {
-                if (C[i][j] > maxC)
-                    maxC = C[i][j];
+        for (var i = 0; i < n; i++) {
+            sumP += p[i];
+            sumQ += q[i];
+            for (var j = 0; j < n; j++) {
+                if (c[i][j] > maxC) {
+                    maxC = c[i][j];
+                }
             }
         }
 
-        double minSum = Math.min(sumP, sumQ);
-        double maxSum = Math.max(sumP, sumQ);
-        double PQnormFactor = MULT_FACTOR / maxSum;
-        double CnormFactor = MULT_FACTOR / maxC;
+        var minSum = Math.min(sumP, sumQ);
+        var maxSum = Math.max(sumP, sumQ);
+        if (maxSum <= 1e100) {
+            maxSum = 1e100;
+        }
+        var pqNormFactor = MULT_FACTOR / maxSum;
+        var cNormFactor = MULT_FACTOR / maxC;
 
-        for (int i = 0; i < N; i++) {
-            iP[i] = (long) Math.floor(P[i] * PQnormFactor + 0.5);
-            iQ[i] = (long) Math.floor(Q[i] * PQnormFactor + 0.5);
-            for (int j = 0; j < N; j++) {
-                iC[i][j] = (long) (Math.floor(C[i][j] * CnormFactor + 0.5));
+        for (var i = 0; i < n; i++) {
+            iP[i] = (long) Math.floor(p[i] * pqNormFactor + 0.5);
+            iQ[i] = (long) Math.floor(q[i] * pqNormFactor + 0.5);
+            for (var j = 0; j < n; j++) {
+                iC[i][j] = (long) Math.floor(c[i][j] * cNormFactor + 0.5);
             }
         }
 
         double dist = distance(iP, iQ, iC, 0);
-        dist = (dist / PQnormFactor) / CnormFactor;
+        dist = dist / pqNormFactor / cNormFactor;
 
-        if (extraMassPenalty == -1)
+        if (extraMassPenalty == -1) {
             extraMassPenalty = maxC;
+        }
         dist += (maxSum - minSum) * extraMassPenalty;
 
         return dist;
     }
 
-    public long distance(long[] Pc, long[] Qc, long[][] C, long extraMassPenalty) {
+    public long distance(long[] pc, long[] qc, long[][] c, long extraMassPenalty) {
 
-        int N = Pc.length;
+        var n = pc.length;
 
-        if (Qc.length != N)
+        if (qc.length != n) {
             throw new IllegalArgumentException();
+        }
 
-        long[] P;
-        long[] Q;
+        long[] p;
+        long[] q;
         long absDiffSumPSumQ;
-        long sumP = 0;
-        long sumQ = 0;
+        var sumP = 0L;
+        var sumQ = 0L;
 
-        for (int i = 0; i < N; i++) {
-            sumP += Pc[i];
-            sumQ += Qc[i];
+        for (var i = 0; i < n; i++) {
+            sumP += pc[i];
+            sumQ += qc[i];
         }
 
         if (sumQ > sumP) {
-            P = Qc;
-            Q = Pc;
+            p = qc;
+            q = pc;
             absDiffSumPSumQ = sumQ - sumP;
         } else {
-            P = Pc;
-            Q = Qc;
+            p = pc;
+            q = qc;
             absDiffSumPSumQ = sumP - sumQ;
         }
 
-        long[] b = new long[2 * N + 2];
-        int THRESHOLD_NODE = 2 * N;
-        int ARTIFICIAL_NODE = THRESHOLD_NODE + 1;
-        System.arraycopy(P, 0, b, 0, N);
+        var b = new long[2 * n + 2];
+        final var THRESHOLD_NODE = 2 * n;
+        final var ARTIFICIAL_NODE = THRESHOLD_NODE + 1;
+        System.arraycopy(p, 0, b, 0, n);
 
-        for (int i = N; i < 2 * N; i++) {
-            b[i] = Q[i - N];
+        for (var i = n; i < 2 * n; i++) {
+            b[i] = q[i - n];
         }
 
         b[THRESHOLD_NODE] = -absDiffSumPSumQ;
         b[ARTIFICIAL_NODE] = 0L;
 
-        long maxC = 0;
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                if (C[i][j] > maxC)
-                    maxC = C[i][j];
+        var maxC = 0L;
+        for (var i = 0; i < n; i++) {
+            for (var j = 0; j < n; j++) {
+                if (c[i][j] > maxC) {
+                    maxC = c[i][j];
+                }
             }
         }
-        if (extraMassPenalty == -1)
+        if (extraMassPenalty == -1) {
             extraMassPenalty = maxC;
+        }
 
         Set<Integer> sourcesThatFlowNotOnlyToThresh = new HashSet<>();
         Set<Integer> sinksThatGetFlowNotOnlyFromThresh = new HashSet<>();
-        long preFlowCost = 0;
+        var preFlowCost = 0L;
 
-        List<List<Edge>> c = new ArrayList<>(b.length);
+        List<List<Edge>> cList = new ArrayList<>(b.length);
 
-        for (int i = 0; i < b.length; i++) {
-            c.add(new LinkedList<>());
+        for (var i = 0; i < b.length; i++) {
+            cList.add(new LinkedList<>());
         }
 
-        for (int i = 0; i < N; i++) {
-            if (b[i] == 0)
+        for (var i = 0; i < n; i++) {
+            if (b[i] == 0) {
                 continue;
-            for (int j = 0; j < N; j++) {
-                if (b[j + N] == 0 || C[i][j] == maxC)
+            }
+            for (var j = 0; j < n; j++) {
+                if (b[j + n] == 0 || c[i][j] == maxC) {
                     continue;
-                c.get(i).add(new Edge(j + N, C[i][j]));
+                }
+                cList.get(i).add(new Edge(j + n, c[i][j]));
                 sourcesThatFlowNotOnlyToThresh.add(i);
-                sinksThatGetFlowNotOnlyFromThresh.add(j + N);
+                sinksThatGetFlowNotOnlyFromThresh.add(j + n);
             }
         }
 
-        for (int i = N; i < 2 * N; i++) {
+        for (var i = n; i < 2 * n; i++) {
             b[i] = -b[i];
         }
 
-        for (int i = 0; i < N; ++i) {
-            c.get(i).add(new Edge(THRESHOLD_NODE, 0));
-            c.get(THRESHOLD_NODE).add(new Edge(i + N, maxC));
+        for (var i = 0; i < n; ++i) {
+            cList.get(i).add(new Edge(THRESHOLD_NODE, 0));
+            cList.get(THRESHOLD_NODE).add(new Edge(i + n, maxC));
         }
 
-        for (int i = 0; i < ARTIFICIAL_NODE; i++) {
-            c.get(i).add(new Edge(ARTIFICIAL_NODE, maxC + 1));
-            c.get(ARTIFICIAL_NODE).add(new Edge(i, maxC + 1));
+        for (var i = 0; i < ARTIFICIAL_NODE; i++) {
+            cList.get(i).add(new Edge(ARTIFICIAL_NODE, maxC + 1));
+            cList.get(ARTIFICIAL_NODE).add(new Edge(i, maxC + 1));
         }
 
-        int currentNodeName = 0;
-        int[] nodesNewNames = new int[b.length];
+        var currentNodeName = 0;
+        var nodesNewNames = new int[b.length];
         Arrays.fill(nodesNewNames, REMOVE_NODE_FLAG);
 
-        for (int i = 0; i < N * 2; i++) {
+        for (var i = 0; i < n * 2; i++) {
             if (b[i] != 0) {
                 if (sourcesThatFlowNotOnlyToThresh.contains(i) || sinksThatGetFlowNotOnlyFromThresh.contains(i)) {
                     nodesNewNames[i] = currentNodeName;
                     currentNodeName++;
                 } else {
-                    if (i >= N) {
-                        preFlowCost -= (b[i] * maxC);
+                    if (i >= n) {
+                        preFlowCost -= b[i] * maxC;
                     }
                     b[THRESHOLD_NODE] = b[THRESHOLD_NODE] + b[i];
                 }
@@ -170,10 +185,10 @@ public class EarthMovers {
         nodesNewNames[ARTIFICIAL_NODE] = currentNodeName;
         currentNodeName++;
 
-        long[] bb = new long[currentNodeName];
+        var bb = new long[currentNodeName];
 
-        int j = 0;
-        for (int i = 0; i < b.length; i++) {
+        var j = 0;
+        for (var i = 0; i < b.length; i++) {
             if (nodesNewNames[i] != REMOVE_NODE_FLAG) {
                 bb[j] = b[i];
                 j++;
@@ -183,22 +198,23 @@ public class EarthMovers {
         List<List<Edge>> cc = new ArrayList<>(bb.length);
         List<List<Edge0>> flows = new ArrayList<>(bb.length);
 
-        for (int i = 0; i < bb.length; i++) {
+        for (var i = 0; i < bb.length; i++) {
             cc.add(new LinkedList<>());
             flows.add(new ArrayList<>(bb.length * 2));
         }
 
-        for (int i = 0; i < c.size(); i++) {
-            if (nodesNewNames[i] == REMOVE_NODE_FLAG)
+        for (var i = 0; i < cList.size(); i++) {
+            if (nodesNewNames[i] == REMOVE_NODE_FLAG) {
                 continue;
-            for (Edge it : c.get(i)) {
+            }
+            for (Edge it : cList.get(i)) {
                 if (nodesNewNames[it.to] != REMOVE_NODE_FLAG) {
                     cc.get(nodesNewNames[i]).add(new Edge(nodesNewNames[it.to], it.cost));
                 }
             }
         }
 
-        long mcfDist = minimalCostFlow.compute(bb, cc, flows);
-        return preFlowCost + mcfDist + (absDiffSumPSumQ * extraMassPenalty);
+        var mcfDist = minimalCostFlow.compute(bb, cc, flows);
+        return preFlowCost + mcfDist + absDiffSumPSumQ * extraMassPenalty;
     }
 }

@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.emd;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -36,14 +37,17 @@ public class JFastEmdVsEarthMoversPerformanceTests {
             EarthMoversUtils.jfastemd(a, b, m, 1);
         }
 
-        logger.debug((System.nanoTime() - start) + " = jfastemd");
+        long duration = System.nanoTime() - start;
+        logger.debug(duration + " = jfastemd");
 
         start = System.nanoTime();
         for (int i = 0; i < repeats; i++) {
             earthMovers.distance(a, b, m, 1);
         }
 
-        logger.debug((System.nanoTime() - start) + " = optimized-jfastemd");
+        long durationOptimized = System.nanoTime() - start;
+        logger.debug(duration + " = optimized-jfastemd");
 
+        Assertions.assertTrue(durationOptimized < duration);
     }
 }
