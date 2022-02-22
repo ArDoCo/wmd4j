@@ -1,5 +1,5 @@
+/* Licensed under MIT 2022. */
 package com.telmomenezes.jfastemd;
-
 
 /**
  * @author Telmo Menezes (telmo@telmomenezes.com)
@@ -9,11 +9,11 @@ public class Signature {
     private int numberOfFeatures;
     private Feature[] features;
     private double[] weights;
-    
+
     public int getNumberOfFeatures() {
         return numberOfFeatures;
     }
-    
+
     public void setNumberOfFeatures(int numberOfFeatures) {
         this.numberOfFeatures = numberOfFeatures;
     }

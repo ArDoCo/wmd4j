@@ -1,9 +1,9 @@
+/* Licensed under MIT 2022. */
 package com.telmomenezes.jfastemd;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
-
 
 /**
  * @author Telmo Menezes (telmo@telmomenezes.com)
@@ -116,8 +116,7 @@ class MinCostFlow {
         }
         for (int from = 0; from < numNodes; ++from) {
             for (Edge it : c.get(from)) {
-                rCostCapBackward.get(it._to).add(
-                        new Edge2(from, -it._cost, 0));
+                rCostCapBackward.get(it._to).add(new Edge2(from, -it._cost, 0));
             }
         }
 
@@ -128,8 +127,7 @@ class MinCostFlow {
             if (e.get(i) > U)
                 U = e.get(i);
         }
-        long delta = (long) (Math.pow(2.0,
-                Math.ceil(Math.log((double) (U)) / Math.log(2.0))));
+        long delta = (long) (Math.pow(2.0, Math.ceil(Math.log((double) (U)) / Math.log(2.0))));
 
         Vector<Long> d = new Vector<Long>();
         Vector<Integer> prev = new Vector<Integer>();
@@ -154,8 +152,7 @@ class MinCostFlow {
             delta = maxSupply;
 
             int[] l = new int[1];
-            computeShortestPath(d, prev, k, rCostForward, rCostCapBackward,
-                    e, l);
+            computeShortestPath(d, prev, k, rCostForward, rCostCapBackward, e, l);
 
             // find delta (minimum on the path from k to l)
             // delta= e[k];
@@ -167,8 +164,7 @@ class MinCostFlow {
 
                 // residual
                 int itccb = 0;
-                while ((itccb < rCostCapBackward.get(from).size())
-                        && (rCostCapBackward.get(from).get(itccb)._to != to)) {
+                while ((itccb < rCostCapBackward.get(from).size()) && (rCostCapBackward.get(from).get(itccb)._to != to)) {
                     itccb++;
                 }
                 if (itccb < rCostCapBackward.get(from).size()) {
@@ -194,16 +190,14 @@ class MinCostFlow {
 
                 // update residual for backward edges
                 int itccb = 0;
-                while ((itccb < rCostCapBackward.get(to).size())
-                        && (rCostCapBackward.get(to).get(itccb)._to != from)) {
+                while ((itccb < rCostCapBackward.get(to).size()) && (rCostCapBackward.get(to).get(itccb)._to != from)) {
                     itccb++;
                 }
                 if (itccb < rCostCapBackward.get(to).size()) {
                     rCostCapBackward.get(to).get(itccb)._residual_capacity += delta;
                 }
                 itccb = 0;
-                while ((itccb < rCostCapBackward.get(from).size())
-                        && (rCostCapBackward.get(from).get(itccb)._to != to)) {
+                while ((itccb < rCostCapBackward.get(from).size()) && (rCostCapBackward.get(from).get(itccb)._to != to)) {
                     itccb++;
                 }
                 if (itccb < rCostCapBackward.get(from).size()) {
@@ -228,9 +222,8 @@ class MinCostFlow {
         return dist;
     }
 
-    void computeShortestPath(Vector<Long> d, Vector<Integer> prev,
-            int from, Vector<List<Edge1>> costForward,
-            Vector<List<Edge2>> costBackward, Vector<Long> e, int[] l) {
+    void computeShortestPath(Vector<Long> d, Vector<Integer> prev, int from, Vector<List<Edge1>> costForward, Vector<List<Edge2>> costBackward, Vector<Long> e,
+            int[] l) {
         // Making heap (all inf except 0, so we are saving comparisons...)
         Vector<Edge3> Q = new Vector<Edge3>();
         for (int i = 0; i < numNodes; i++) {
@@ -278,8 +271,7 @@ class MinCostFlow {
                 assert (it._reduced_cost >= 0);
                 long alt = d.get(u) + it._reduced_cost;
                 int v = it._to;
-                if ((nodesToQ.get(v) < Q.size())
-                        && (alt < Q.get(nodesToQ.get(v))._dist)) {
+                if ((nodesToQ.get(v) < Q.size()) && (alt < Q.get(nodesToQ.get(v))._dist)) {
                     heapDecreaseKey(Q, nodesToQ, v, alt);
                     prev.set(v, u);
                 }
@@ -289,8 +281,7 @@ class MinCostFlow {
                     assert (it._reduced_cost >= 0);
                     long alt = d.get(u) + it._reduced_cost;
                     int v = it._to;
-                    if ((nodesToQ.get(v) < Q.size())
-                            && (alt < Q.get(nodesToQ.get(v))._dist)) {
+                    if ((nodesToQ.get(v) < Q.size()) && (alt < Q.get(nodesToQ.get(v))._dist)) {
                         heapDecreaseKey(Q, nodesToQ, v, alt);
                         prev.set(v, u);
                     }
@@ -324,8 +315,7 @@ class MinCostFlow {
         }
     }
 
-    void heapDecreaseKey(Vector<Edge3> Q, Vector<Integer> nodes_to_Q,
-            int v, long alt) {
+    void heapDecreaseKey(Vector<Edge3> Q, Vector<Integer> nodes_to_Q, int v, long alt) {
         int i = nodes_to_Q.get(v);
         Q.get(i)._dist = alt;
         while (i > 0 && Q.get(PARENT(i))._dist > Q.get(i)._dist) {

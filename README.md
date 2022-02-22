@@ -17,9 +17,3 @@ wm.distance("obama speaks to the media in illinois", "the president greets the p
 # Validation
 
 wmd4j is validated against Gensim's wmdistance results on custom word2vec model.
-
-
-
-
-
-
