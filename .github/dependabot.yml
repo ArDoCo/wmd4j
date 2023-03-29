@@ -10,6 +10,7 @@ updates:
     commit-message:
       prefix: "Dependency"
       include: "scope"
+    open-pull-requests-limit: 0
   - package-ecosystem: "maven"
     directory: "/"
     schedule:
@@ -20,3 +21,4 @@ updates:
     commit-message:
       prefix: "Dependency"
       include: "scope"
+    open-pull-requests-limit: 0
